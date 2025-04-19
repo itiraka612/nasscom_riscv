@@ -1,1 +1,1 @@
-# nasscom_riscv
+# riscv_worshop
