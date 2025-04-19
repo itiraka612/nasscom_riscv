@@ -1,35 +1,39 @@
-//calculator on makerchip
+//calculator
 \m5_TLV_version 1d: tl-x.org
 \m5
 
 \SV
-   m5_makerchip_module
+  // this is like the main part of our design, I think?
+  m5_makerchip_module    // (Expanded in Nav-TLV pane.)
 \TLV
-   $reset = *reset;
+  $reset = *reset; // this is for resetting, very important!
 
-   // Inputs: generate small test values
-   $val1[31:0] = $rand1[3:0];
-   $val2[31:0] = $rand2[3:0];
-   $op[1:0]    = $rand[1:0];   // 00 = +, 01 = -, 10 = *, 11 = /
+  // okay, so we need some numbers to work with
+  $val1[31:0] = $rand1[3:0]; // first number, it's gonna be random (I think small though)
+  $val2[31:0] = $rand2[3:0]; // second number, also random and probably small
+  $op[1:0]    = $rand[1:0];    // this tells us what to do! like adding or subtracting.
+                                // 00 means add, 01 means subtract, 10 is multiply, and 11 is divide
 
-   // Perform operations
-   $sum[31:0]  = $val1 + $val2;
-   $diff[31:0] = $val1 - $val2;
-   $prod[31:0] = $val1 * $val2;
-   $quot[31:0] = ($val2 != 0) ? ($val1 / $val2) : 32'd0;
+  // now we have to actually do the calculations
+  $sum[31:0]  = $val1 + $val2; // this is when we add the two numbers
+  $diff[31:0] = $val1 - $val2; // this is when we subtract them
+  $prod[31:0] = $val1 * $val2; // and this is for multiplying
+  $quot[31:0] = ($val2 != 0) ? ($val1 / $val2) : 32'd0; // division! but we need to check if the second number is zero, because you can't divide by zero. if it is, the answer is just zero.
 
-   // Select result
-   $out[31:0] =
-       ($op == 2'b00) ? $sum  :
-       ($op == 2'b01) ? $diff :
-       ($op == 2'b10) ? $prod :
-                        $quot;
+  // now we need to choose which answer to send out
+  $out[31:0] =
+    ($op == 2'b00) ? $sum   : // if the operation was add, the output is the sum
+    ($op == 2'b01) ? $diff  : // if it was subtract, the output is the difference
+    ($op == 2'b10) ? $prod  : // if it was multiply, the output is the product
+                         $quot; // otherwise (it must be divide), the output is the quotient
 
-   // Print output for each cycle
-   $display("val1 = %0d, val2 = %0d, op = %0d, out = %0d", $val1, $val2, $op, $out);
+  // let's see what's going on! this will show the numbers and the result
+  $display("value 1 = %0d, value 2 = %0d, operation = %0d, result = %0d", $val1, $val2, $op, $out);
 
-   *passed = *cyc_cnt > 40;
-   *failed = 1'b0;
+
+  // these are for checking if it worked or not (I think?)
+  *passed = *cyc_cnt > 40; // if it runs for more than 40 cycles, it passes?
+  *failed = 1'b0; // I don't think it should fail right now
 
 \SV
-endmodule
+  endmodule
