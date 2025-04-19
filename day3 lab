@@ -1,0 +1,35 @@
+
+\m5_TLV_version 1d: tl-x.org
+\m5
+
+\SV
+   m5_makerchip_module
+\TLV
+   $reset = *reset;
+
+   // Inputs: generate small test values
+   $val1[31:0] = $rand1[3:0];
+   $val2[31:0] = $rand2[3:0];
+   $op[1:0]    = $rand[1:0];   // 00 = +, 01 = -, 10 = *, 11 = /
+
+   // Perform operations
+   $sum[31:0]  = $val1 + $val2;
+   $diff[31:0] = $val1 - $val2;
+   $prod[31:0] = $val1 * $val2;
+   $quot[31:0] = ($val2 != 0) ? ($val1 / $val2) : 32'd0;
+
+   // Select result
+   $out[31:0] =
+       ($op == 2'b00) ? $sum  :
+       ($op == 2'b01) ? $diff :
+       ($op == 2'b10) ? $prod :
+                        $quot;
+
+   // Print output for each cycle
+   $display("val1 = %0d, val2 = %0d, op = %0d, out = %0d", $val1, $val2, $op, $out);
+
+   *passed = *cyc_cnt > 40;
+   *failed = 1'b0;
+
+\SV
+endmodule
