@@ -1,0 +1,44 @@
+\m5_TLV_version 1d: tl-x.org
+\m5
+
+  // Lab: Sequential Calculator
+
+  // A real calculator remembers the last result, and uses it for the next
+  // calculation.
+
+\SV
+  m5_makerchip_module // (Expanded in Nav-TLV pane.)
+\TLV
+  $reset = *reset;
+
+  //storing the previous result
+  $previous_result[31:0] = $reset ? 32'b0 : $out_mux;
+
+  // Input values
+  $val1[31:0] = $reset ? $rand1[3:0] : $previous_result; // Use previous result if not reset
+  $val2[31:0] = $rand2[3:0];
+  $op[1:0]   = $rand[1:0];  // 00: add, 01: subtract, 10: multiply, 11: divide
+
+  // Calculations
+  $sum[31:0]  = $val1 + $val2;
+  $diff[31:0] = $val1 - $val2;
+  $prod[31:0] = $val1 * $val2;
+  $quot[31:0] = ($val2 != 0) ? ($val1 / $val2) : 32'd0;
+
+  // Output Mux
+  $out_mux[31:0] =
+    ($op == 2'b00) ? $sum  :
+    ($op == 2'b01) ? $diff :
+    ($op == 2'b10) ? $prod :
+                       $quot ;
+
+  // Output register (holds the current result)
+  $out[31:0] = $out_mux;
+
+  // Display signals
+  $display("value 1 = %0d, value 2 = %0d, operation = %0d, result = %0d", $val1, $val2, $op, $out);
+
+  *passed = *cyc_cnt > 40;
+  *failed = 1'b0;
+\SV
+endmodule
