@@ -1,14 +1,13 @@
-//calculator
 \m5_TLV_version 1d: tl-x.org
 \m5
-
+   
+   
 \SV
-  m5_makerchip_module   
+   m5_makerchip_module   // (Expanded in Nav-TLV pane.)
 \TLV
-  $reset = *reset; 
-
-  //numbers to work with
-  $val1[31:0] = $rand1[3:0]; // first number
+   $reset = *reset;
+   
+   $val1[31:0] = $rand1[3:0]; // first number
   $val2[31:0] = $rand2[3:0]; // second number
   $op[1:0]    = $rand[1:0];    // adding or subtracting.
                                 // 00 means add, 01 means subtract, 10 is multiply, and 11 is divide
@@ -29,8 +28,8 @@
   //show the numbers and the result
   $display("value 1 = %0d, value 2 = %0d, operation = %0d, result = %0d", $val1, $val2, $op, $out);
 
-  *passed = *cyc_cnt > 40; // 
-  *failed = 1'b0; //
-
+   
+   *passed = *cyc_cnt > 40;
+   *failed = 1'b0;
 \SV
-  endmodule
+   endmodule
